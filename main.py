@@ -11,7 +11,7 @@ def main():
         precio_venta_kg=9200,
         costo_pasto_mensual=60000,
         costo_sal_med_mensual=14000,
-        meses=30,
+        meses=12,
         otros_costos=100000,
     )
 
