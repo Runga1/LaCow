@@ -1,0 +1,16 @@
+# entorno virtual
+.venv/
+
+# python cache
+__pycache__/
+*.pyc
+
+# notebooks
+.ipynb_checkpoints/
+
+# variables de entorno
+.env
+
+# archivos del sistema
+.DS_Store
+Thumbs.db
