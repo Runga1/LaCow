@@ -23,10 +23,18 @@ def calcular_rentabilidad(escenario: EscenarioGanado):
     ) * escenario.meses
 
     costo_total = compra_total + costo_sostenimiento + escenario.otros_costos
-
     utilidad = venta_total - costo_total
-
     roi = utilidad / costo_total if costo_total > 0 else 0
+
+    ganancia_peso_kg = escenario.peso_venta_kg - escenario.peso_compra_kg
+
+    costo_por_kg_ganado = (
+        costo_sostenimiento / ganancia_peso_kg if ganancia_peso_kg > 0 else 0
+    )
+
+    precio_equilibrio_kg_venta = (
+        costo_total / escenario.peso_venta_kg if escenario.peso_venta_kg > 0 else 0
+    )
 
     return {
         "compra_total": compra_total,
@@ -35,4 +43,7 @@ def calcular_rentabilidad(escenario: EscenarioGanado):
         "costo_total": costo_total,
         "utilidad": utilidad,
         "roi": roi,
+        "ganancia_peso_kg": ganancia_peso_kg,
+        "costo_por_kg_ganado": costo_por_kg_ganado,
+        "precio_equilibrio_kg_venta": precio_equilibrio_kg_venta,
     }
