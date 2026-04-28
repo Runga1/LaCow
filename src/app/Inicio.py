@@ -37,7 +37,7 @@ def construir_escenario(nombre: str, defaults: dict) -> dict:
 
 
 def run_app() -> None:
-    st.set_page_config(page_title="LaCow", layout="wide")
+    st.set_page_config(page_title="LaCow", page_icon="🐄", layout="wide")
 
     ruta_logo = ROOT / "imagen" / "ChatGPT Image 10 abr 2026, 09_39_54.png"
     ruta_historico = ROOT / "outputs" / "historico_simulaciones.xlsx"
@@ -54,8 +54,10 @@ def run_app() -> None:
     .brand-wrap { background: linear-gradient(90deg, #0f172a, #1e3a5f); border-radius: 20px; padding: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
     .brand-title { color: white; font-size: 2rem; font-weight: 800; }
     .brand-subtitle { color: #cbd5f5; }
-    .card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 15px 30px rgba(0,0,0,0.1); margin-bottom: 15px; }
+    .hero { background: linear-gradient(90deg, #0f172a, #1e3a5f); border-radius: 24px; padding: 28px; color: white; box-shadow: 0 18px 40px rgba(0,0,0,0.18); margin-bottom: 1.2rem; }
+    .card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 15px 30px rgba(0,0,0,0.1); margin-bottom: 15px; border: 1px solid #dbe4ee; }
     .stButton>button { background: linear-gradient(90deg,#16a34a,#22c55e); color:white; border-radius:12px; height:50px; font-weight:bold; }
+    div[data-testid="stMetric"] { background: white; border-radius: 18px; padding: 14px; box-shadow: 0 8px 18px rgba(0,0,0,0.06); border: 1px solid #dbe4ee; }
     </style>
     """,
         unsafe_allow_html=True,
@@ -93,6 +95,25 @@ def run_app() -> None:
     if seccion == "Inicio":
         st.markdown("## Bienvenido a LaCow")
         st.write("Regístrate o inicia sesión para explorar las fincas y oportunidades de inversión.")
+
+        st.markdown(
+            """
+            <div class="hero">
+                <h3 style="margin:0;">Plataforma para simulación, inversión y gestión ganadera</h3>
+                <p style="margin-top:.6rem;color:#dbeafe;">
+                Conecta inversionistas y ganaderos para comprar ganado, sostenerlo en finca y repartir utilidades.
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        m1, m2, m3 = st.columns(3)
+        with m1:
+            st.metric("Módulos activos", "4")
+        with m2:
+            st.metric("Estado", "Operativo")
+        with m3:
+            st.metric("Enfoque", "Ganado + Analítica")
 
         col_registro, col_login = st.columns(2)
         with col_registro:
