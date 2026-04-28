@@ -6,6 +6,7 @@ sys.path.append(str(ROOT))
 
 import pandas as pd
 import streamlit as st
+import plotly.express as px
 
 from src.models.simulador_ganado import EscenarioGanado, calcular_rentabilidad
 from src.utils.guardar_simulacion import guardar_simulacion_excel
@@ -83,7 +84,6 @@ ruta_historico = ROOT / "outputs" / "historico_simulaciones.xlsx"
 # --------------------------------------------------
 st.markdown("""
 <style>
-
 .stApp {
     background: linear-gradient(180deg, #eef2f7 0%, #e6edf5 100%);
 }
@@ -113,19 +113,18 @@ st.markdown("""
     margin-bottom: 15px;
 }
 
-.stButton>button {
-    background: linear-gradient(90deg,#16a34a,#22c55e);
-    color:white;
-    border-radius:12px;
-    height:50px;
-    font-weight:bold;
+.stButton > button {
+    background: linear-gradient(90deg, #16a34a, #22c55e);
+    color: white;
+    border-radius: 12px;
+    height: 50px;
+    font-weight: bold;
 }
-
 </style>
 """, unsafe_allow_html=True)
 
 # --------------------------------------------------
-# HEADER (ARREGLADO)
+# HEADER
 # --------------------------------------------------
 logo_col, header_col = st.columns([2.5, 7.5])
 
@@ -139,7 +138,7 @@ with header_col:
     <div class="brand-wrap">
         <div class="brand-title">LaCow</div>
         <div class="brand-subtitle">
-        Simulador ganadero con enfoque en utilidad, ROI y punto de equilibrio
+            Simulador ganadero con enfoque en utilidad, ROI y punto de equilibrio
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -153,7 +152,6 @@ tab1, tab2, tab3 = st.tabs(["Simulador", "Histórico", "Comparador"])
 # SIMULADOR
 # ==================================================
 with tab1:
-
     c1, c2 = st.columns(2)
 
     with c1:
@@ -174,7 +172,6 @@ with tab1:
         st.markdown('<div class="card"><b>Resultados</b></div>', unsafe_allow_html=True)
 
         if calcular:
-
             datos = {
                 "peso_compra_kg": peso_compra_kg,
                 "precio_compra_kg": precio_compra_kg,
@@ -194,36 +191,38 @@ with tab1:
             st.metric("Utilidad", f"${res['utilidad']:,.0f}")
             st.metric("ROI", f"{res['roi']:.2%}")
             st.metric("Equilibrio", f"${res['precio_equilibrio_kg_venta']:,.0f}")
+        else:
+            st.info("Completa los campos y pulsa Calcular.")
 
 # ==================================================
 # HISTORICO
 # ==================================================
 with tab2:
-
     st.markdown('<div class="card"><b>Histórico</b></div>', unsafe_allow_html=True)
 
     if ruta_historico.exists():
         df = pd.read_excel(ruta_historico)
-        st.dataframe(df)
+        st.dataframe(df, use_container_width=True)
+    else:
+        st.info("Aún no existe histórico de simulaciones.")
 
 # ==================================================
 # COMPARADOR
 # ==================================================
 with tab3:
-
     st.markdown('<div class="card"><b>Comparador</b></div>', unsafe_allow_html=True)
 
     c1, c2, c3 = st.columns(3)
 
     defaults = {
-        "peso_compra_kg":160,
-        "precio_compra_kg":7500,
-        "peso_venta_kg":450,
-        "precio_venta_kg":9200,
-        "costo_pasto_mensual":60000,
-        "costo_sal_med_mensual":15000,
-        "meses":12,
-        "otros_costos":100000
+        "peso_compra_kg": 160,
+        "precio_compra_kg": 7500,
+        "peso_venta_kg": 450,
+        "precio_venta_kg": 9200,
+        "costo_pasto_mensual": 60000,
+        "costo_sal_med_mensual": 15000,
+        "meses": 12,
+        "otros_costos": 100000
     }
 
     with c1:
@@ -233,12 +232,97 @@ with tab3:
     with c3:
         esc3 = construir_escenario("Escenario 3", defaults)
 
-    if st.button("Comparar"):
+    comparar = st.button("Comparar escenarios")
 
-        resultados = []
-        for nombre, esc in zip(["E1","E2","E3"], [esc1, esc2, esc3]):
-            r = calcular_rentabilidad(EscenarioGanado(**esc))
-            resultados.append({"escenario":nombre, **r})
+    if comparar:
+        resultados_comparacion = []
 
-        df = pd.DataFrame(resultados)
-        st.dataframe(df)
+        escenarios_dict = {
+            "Conservador": esc1,
+            "Base": esc2,
+            "Optimista": esc3,
+        }
+
+        for nombre, datos in escenarios_dict.items():
+            escenario = EscenarioGanado(**datos)
+            resultado = calcular_rentabilidad(escenario)
+
+            resultados_comparacion.append({
+                "escenario": nombre,
+                **datos,
+                **resultado
+            })
+
+        df_comparacion = pd.DataFrame(resultados_comparacion)
+
+        st.markdown("### Comparación consolidada")
+        st.dataframe(df_comparacion, use_container_width=True)
+
+        m1, m2, m3 = st.columns(3)
+
+        with m1:
+            mejor_roi = df_comparacion.loc[df_comparacion["roi"].idxmax()]
+            st.metric("Mejor ROI", mejor_roi["escenario"], f"{mejor_roi['roi']:.2%}")
+
+        with m2:
+            mayor_utilidad = df_comparacion.loc[df_comparacion["utilidad"].idxmax()]
+            st.metric("Mayor utilidad", mayor_utilidad["escenario"], f"${mayor_utilidad['utilidad']:,.0f}")
+
+        with m3:
+            menor_equilibrio = df_comparacion.loc[df_comparacion["precio_equilibrio_kg_venta"].idxmin()]
+            st.metric(
+                "Menor precio equilibrio",
+                menor_equilibrio["escenario"],
+                f"${menor_equilibrio['precio_equilibrio_kg_venta']:,.2f}"
+            )
+
+        st.markdown("### Visualización comparativa")
+
+        g1, g2 = st.columns(2)
+
+        with g1:
+            fig_utilidad = px.bar(
+                df_comparacion,
+                x="escenario",
+                y="utilidad",
+                title="Utilidad por escenario",
+                text_auto=".2s",
+            )
+            fig_utilidad.update_layout(
+                xaxis_title="Escenario",
+                yaxis_title="Utilidad",
+                plot_bgcolor="white",
+                paper_bgcolor="white",
+            )
+            st.plotly_chart(fig_utilidad, use_container_width=True)
+
+        with g2:
+            fig_roi = px.bar(
+                df_comparacion,
+                x="escenario",
+                y="roi",
+                title="ROI por escenario",
+                text_auto=".2%",
+            )
+            fig_roi.update_layout(
+                xaxis_title="Escenario",
+                yaxis_title="ROI",
+                plot_bgcolor="white",
+                paper_bgcolor="white",
+            )
+            st.plotly_chart(fig_roi, use_container_width=True)
+
+        fig_equilibrio = px.bar(
+            df_comparacion,
+            x="escenario",
+            y="precio_equilibrio_kg_venta",
+            title="Precio de equilibrio por escenario",
+            text_auto=".2f",
+        )
+        fig_equilibrio.update_layout(
+            xaxis_title="Escenario",
+            yaxis_title="Precio equilibrio kg venta",
+            plot_bgcolor="white",
+            paper_bgcolor="white",
+        )
+        st.plotly_chart(fig_equilibrio, use_container_width=True)
