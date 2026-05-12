@@ -68,14 +68,14 @@ def run_app() -> None:
         }
         .hero-glow {
             position: absolute;
-            width: 280px;
-            height: 280px;
-            right: -130px;
-            top: -170px;
+            width: 340px;
+            height: 340px;
+            right: -90px;
+            top: -70px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(39, 238, 154, .22) 0%, rgba(39, 238, 154, .05) 45%, transparent 70%);
+            background: radial-gradient(circle, rgba(39, 238, 154, .45) 0%, rgba(39, 238, 154, .08) 45%, transparent 70%);
             filter: blur(1px);
-            pointer-events: none;
+            animation: floaty 5s ease-in-out infinite;
         }
         .hero-body {
             position: relative;
@@ -144,6 +144,10 @@ def run_app() -> None:
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+        @keyframes floaty {
+            0%,100% { transform: translateY(0px); }
+            50% { transform: translateY(14px); }
         }
         </style>
         """,
@@ -219,19 +223,6 @@ def run_app() -> None:
                     st.success(msg)
 
     st.info("La sección de fincas y oferta de ganado continúa en el módulo lateral **Invertir en ganado** (sin duplicar información aquí).")
-    cta1, cta2 = st.columns([1, 1])
-    with cta1:
-        st.link_button(
-            "Ir a invertir en ganado",
-            "https://wa.me/573001112233?text=Hola%20LaCow,%20quiero%20invertir%20en%20ganado",
-            use_container_width=True,
-        )
-    with cta2:
-        st.link_button(
-            "Hablar con asesor",
-            "mailto:comercial@lacow.co?subject=Interes%20en%20invertir%20en%20ganado",
-            use_container_width=True,
-        )
 
     st.markdown("<div class='section-title'>¿En qué consiste LaCow?</div>", unsafe_allow_html=True)
     st.markdown(
@@ -342,60 +333,6 @@ def run_app() -> None:
                 r = calcular_rentabilidad(EscenarioGanado(**esc))
                 resultados.append({"escenario": nombre, **r})
             st.dataframe(pd.DataFrame(resultados), use_container_width=True)
-
-    st.markdown("<div class='section-title'>Mi ganado (portafolio del cliente)</div>", unsafe_allow_html=True)
-    st.markdown(
-        "<div class='section-copy'>Aquí se muestran animales comprados por el cliente, su evolución de peso y estado actual. "
-        "No es un formulario para registrar manualmente vacas.</div>",
-        unsafe_allow_html=True,
-    )
-
-    cartera = pd.DataFrame(
-        [
-            {
-                "ID": "LC-001",
-                "Raza": "Brahman cruzado",
-                "Peso compra (kg)": 178,
-                "Peso actual (kg)": 231,
-                "Ganancia (kg)": 53,
-                "Estado": "En levante",
-                "Finca": "El Encanto",
-                "Última actualización": "2026-04-25",
-            },
-            {
-                "ID": "LC-014",
-                "Raza": "Angus x Cebú",
-                "Peso compra (kg)": 162,
-                "Peso actual (kg)": 219,
-                "Ganancia (kg)": 57,
-                "Estado": "En ceba",
-                "Finca": "San Pedro",
-                "Última actualización": "2026-04-25",
-            },
-            {
-                "ID": "LC-026",
-                "Raza": "Brahman puro",
-                "Peso compra (kg)": 191,
-                "Peso actual (kg)": 244,
-                "Ganancia (kg)": 53,
-                "Estado": "Disponible para salida",
-                "Finca": "La Esperanza",
-                "Última actualización": "2026-04-25",
-            },
-        ]
-    )
-
-    k1, k2, k3, k4 = st.columns(4)
-    with k1:
-        st.metric("Animales activos", f"{len(cartera)}")
-    with k2:
-        st.metric("Peso promedio compra", f"{cartera['Peso compra (kg)'].mean():.1f} kg")
-    with k3:
-        st.metric("Peso promedio actual", f"{cartera['Peso actual (kg)'].mean():.1f} kg")
-    with k4:
-        st.metric("Ganancia promedio", f"{cartera['Ganancia (kg)'].mean():.1f} kg")
-
-    st.dataframe(cartera, use_container_width=True, hide_index=True)
 
 
 run_app()
