@@ -48,156 +48,205 @@ def run_app() -> None:
 
     st.markdown(
         """
-    <style>
-    .stApp { background: linear-gradient(180deg, #f4f7fb 0%, #eaf1f8 100%); }
-    .hero {
-        position: relative;
-        overflow: hidden;
-        background: linear-gradient(120deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%);
-        border-radius: 24px;
-        padding: 32px;
-        color: white;
-        box-shadow: 0 20px 45px rgba(10, 20, 40, .25);
-        animation: fadeUp .6s ease;
-    }
-    .hero::before {
-        content: "";
-        position: absolute;
-        width: 260px;
-        height: 260px;
-        border-radius: 50%;
-        background: rgba(255,255,255,.08);
-        top: -80px;
-        right: -40px;
-    }
-    .section-card {
-        background: #fff;
-        border-radius: 20px;
-        padding: 22px;
-        border: 1px solid #dbe4ee;
-        box-shadow: 0 10px 24px rgba(0,0,0,.06);
-        animation: fadeUp .55s ease;
-    }
-    .section-card:hover { transform: translateY(-2px); transition: .25s ease; }
-    .lacow-chip {
-        display: inline-block;
-        padding: .28rem .65rem;
-        border-radius: 999px;
-        font-size: .83rem;
-        background: #dbeafe;
-        color: #1e3a8a;
-        margin-right: .4rem;
-        margin-bottom: .4rem;
-    }
-    @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(8px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    </style>
-    """,
+        <style>
+        .stApp {
+            background: radial-gradient(circle at 20% 10%, #0b1f38 0%, #0f243f 35%, #eaf0f7 35.2%, #eef3f9 100%);
+        }
+        .hero {
+            position: relative;
+            min-height: 560px;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(12, 23, 38, 0.35);
+            margin-bottom: 2rem;
+            animation: fadeIn .8s ease;
+            background:
+                linear-gradient(110deg, rgba(6, 16, 30, .92) 0%, rgba(6, 16, 30, .74) 42%, rgba(12, 20, 35, .45) 65%, rgba(22, 35, 58, .35) 100%),
+                url('https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&w=1800&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        .hero-glow {
+            position: absolute;
+            width: 340px;
+            height: 340px;
+            right: -90px;
+            top: -70px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(39, 238, 154, .45) 0%, rgba(39, 238, 154, .08) 45%, transparent 70%);
+            filter: blur(1px);
+            animation: floaty 5s ease-in-out infinite;
+        }
+        .hero-body {
+            position: relative;
+            z-index: 2;
+            width: min(680px, 92%);
+            padding: 3.4rem 2.8rem;
+            color: #f8fbff;
+        }
+        .hero-kicker {
+            letter-spacing: .09rem;
+            text-transform: uppercase;
+            font-size: .85rem;
+            color: #9eeac7;
+            font-weight: 600;
+        }
+        .hero-title {
+            font-size: clamp(2rem, 5vw, 3.8rem);
+            line-height: 1.05;
+            font-weight: 800;
+            margin: .6rem 0 1rem 0;
+        }
+        .hero-subtitle {
+            font-size: 1.05rem;
+            color: #d8e4f2;
+            margin-bottom: 1.4rem;
+            max-width: 640px;
+        }
+        .hero-badges span {
+            display: inline-block;
+            margin-right: .5rem;
+            margin-bottom: .5rem;
+            padding: .35rem .75rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.22);
+            font-size: .83rem;
+        }
+        .glass {
+            background: rgba(255,255,255,.82);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(203, 213, 225, .9);
+            border-radius: 22px;
+            padding: 1.2rem 1.25rem;
+            box-shadow: 0 16px 32px rgba(15, 23, 42, 0.11);
+            animation: fadeUp .55s ease;
+        }
+        .glass h4 {
+            margin: 0 0 .5rem 0;
+            color: #111827;
+        }
+        .section-title {
+            color: #0f172a;
+            font-size: 1.75rem;
+            margin: 1.1rem 0 .7rem 0;
+            font-weight: 750;
+        }
+        .section-copy {
+            color: #334155;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes floaty {
+            0%,100% { transform: translateY(0px); }
+            50% { transform: translateY(14px); }
+        }
+        </style>
+        """,
         unsafe_allow_html=True,
     )
 
-    logo_col, hero_col = st.columns([1.6, 8.4], vertical_alignment="center")
-    with logo_col:
-        if ruta_logo.exists():
-            st.image(str(ruta_logo), width=170)
-
-    with hero_col:
-        st.markdown(
-            """
-            <div class="hero">
-                <h1 style="margin:0;font-size:2.2rem;">Bienvenido a LaCow</h1>
-                <p style="margin:.8rem 0 0 0;color:#dbeafe;font-size:1.05rem;max-width:900px;">
-                    Plataforma para invertir en ganadería bajo contratos al partir,
-                    con trazabilidad, acuerdos claros y proyección financiera.
-                </p>
+    st.markdown(
+        """
+        <section class="hero">
+            <div class="hero-glow"></div>
+            <div class="hero-body">
+                <div class="hero-kicker">LaCow · inversión ganadera inteligente</div>
+                <div class="hero-title">Contratos al partir con trazabilidad y claridad financiera</div>
+                <div class="hero-subtitle">
+                    Conectamos inversionistas y tenedores para desarrollar ciclos ganaderos con reglas claras,
+                    seguimiento operativo y liquidaciones transparentes.
+                </div>
+                <div class="hero-badges">
+                    <span>Modelo aparcería</span>
+                    <span>Acuerdos 50/50 · 60/40</span>
+                    <span>Gestión de riesgo</span>
+                </div>
             </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        </section>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    tab_inicio, tab_info, tab_sim = st.tabs(["Inicio", "¿Qué es LaCow?", "Simulador financiero"])
+    st.markdown("## Acceso a la plataforma")
+    st.markdown("<div class='section-copy'>Ingresa o crea tu cuenta para administrar tus operaciones y revisar el simulador.</div>", unsafe_allow_html=True)
 
-    with tab_inicio:
-        st.markdown("#### Acceso a la plataforma")
+    col_registro, col_login = st.columns(2, gap="large")
 
-        c1, c2 = st.columns(2, gap="large")
+    with col_registro:
+        st.markdown('<div class="glass"><h4>Crear cuenta</h4></div>', unsafe_allow_html=True)
+        with st.form("form_registro"):
+            nombre = st.text_input("Nombre completo", placeholder="Ej: Juan David Pérez")
+            correo = st.text_input("Correo electrónico", placeholder="correo@ejemplo.com")
+            telefono = st.text_input("WhatsApp", placeholder="+57 300 000 0000")
+            ciudad = st.text_input("Ciudad", placeholder="Montería")
+            clave = st.text_input("Contraseña", type="password")
+            confirmar_clave = st.text_input("Confirmar contraseña", type="password")
+            aceptar = st.checkbox("Acepto términos y política de tratamiento de datos")
+            crear_cuenta = st.form_submit_button("Registrarme")
 
-        with c1:
-            st.markdown('<div class="section-card">', unsafe_allow_html=True)
-            st.markdown("##### Crear cuenta")
-            with st.form("form_registro"):
-                nombre = st.text_input("Nombre completo", placeholder="Ej: Juan David Pérez")
-                correo = st.text_input("Correo electrónico", placeholder="correo@ejemplo.com")
-                telefono = st.text_input("WhatsApp", placeholder="+57 300 000 0000")
-                ciudad = st.text_input("Ciudad", placeholder="Montería")
-                clave = st.text_input("Contraseña", type="password")
-                confirmar_clave = st.text_input("Confirmar contraseña", type="password")
-                aceptar = st.checkbox("Acepto términos y política de tratamiento de datos")
-                crear_cuenta = st.form_submit_button("Registrarme")
+            if crear_cuenta:
+                if not all([nombre, correo, telefono, ciudad, clave, confirmar_clave]):
+                    st.error("Completa todos los campos del registro.")
+                elif clave != confirmar_clave:
+                    st.error("Las contraseñas no coinciden.")
+                elif not aceptar:
+                    st.error("Debes aceptar los términos para continuar.")
+                else:
+                    st.success("Registro creado (modo demo). Ya puedes iniciar sesión.")
 
-                if crear_cuenta:
-                    if not all([nombre, correo, telefono, ciudad, clave, confirmar_clave]):
-                        st.error("Completa todos los campos del registro.")
-                    elif clave != confirmar_clave:
-                        st.error("Las contraseñas no coinciden.")
-                    elif not aceptar:
-                        st.error("Debes aceptar los términos para continuar.")
-                    else:
-                        st.success("Registro creado (modo demo). Ya puedes iniciar sesión.")
-            st.markdown('</div>', unsafe_allow_html=True)
+    with col_login:
+        st.markdown('<div class="glass"><h4>Iniciar sesión</h4></div>', unsafe_allow_html=True)
+        with st.form("form_login"):
+            correo_login = st.text_input("Correo", key="correo_login", placeholder="correo@ejemplo.com")
+            clave_login = st.text_input("Contraseña", type="password", key="clave_login")
+            recordar = st.checkbox("Recordar mi sesión")
+            btn_login = st.form_submit_button("Entrar")
 
-        with c2:
-            st.markdown('<div class="section-card">', unsafe_allow_html=True)
-            st.markdown("##### Iniciar sesión")
-            with st.form("form_login"):
-                correo_login = st.text_input("Correo", key="correo_login", placeholder="correo@ejemplo.com")
-                clave_login = st.text_input("Contraseña", type="password", key="clave_login")
-                recordar = st.checkbox("Recordar mi sesión")
-                btn_login = st.form_submit_button("Entrar")
+            if btn_login:
+                if not correo_login or not clave_login:
+                    st.error("Ingresa correo y contraseña.")
+                else:
+                    st.session_state.usuario_logueado = True
+                    st.session_state.nombre_usuario = correo_login
+                    msg = "Bienvenido."
+                    if recordar:
+                        msg += " Dejaremos tu sesión recordada en este navegador (demo)."
+                    st.success(msg)
 
-                if btn_login:
-                    if not correo_login or not clave_login:
-                        st.error("Ingresa correo y contraseña.")
-                    else:
-                        st.session_state.usuario_logueado = True
-                        st.session_state.nombre_usuario = correo_login
-                        mensaje = "Bienvenido."
-                        if recordar:
-                            mensaje += " Dejaremos tu sesión recordada en este navegador (demo)."
-                        st.success(mensaje)
-            st.markdown('</div>', unsafe_allow_html=True)
+    st.info("La sección de fincas y oferta de ganado continúa en el módulo lateral **Invertir en ganado** (sin duplicar información aquí).")
 
-        st.info("Las fincas y oferta de ganado se administran desde el módulo **Invertir en ganado** en el menú lateral.")
+    st.markdown("<div class='section-title'>¿En qué consiste LaCow?</div>", unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div class="glass">
+            <p>
+            LaCow opera bajo contratos al partir (aparcería): una parte aporta ganado/capital y otra aporta tierra,
+            manejo y operación. Al cierre del ciclo se liquidan resultados y se reparten utilidades según lo pactado.
+            </p>
+            <ul>
+                <li>Marco de referencia en Colombia: Ley 6 de 1975 y Decreto 2815 de 1975.</li>
+                <li>La valoración puede pactarse por kilos, valor de mercado, edad o modelo mixto.</li>
+                <li>El reparto se define por contrato: 50/50, 55/45, 60/40, etc.</li>
+                <li>Debe incluir cláusulas de mortalidad, fletes, vacunación y liquidación anticipada.</li>
+                <li>La trazabilidad por animal (peso e identificación) evita conflictos de liquidación.</li>
+            </ul>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    with tab_info:
-        st.markdown("#### ¿En qué consiste LaCow?")
-        st.markdown(
-            """
-            <div class="section-card">
-                <span class="lacow-chip">Contrato al partir</span>
-                <span class="lacow-chip">Aparcería ganadera</span>
-                <span class="lacow-chip">Mutua colaboración</span>
-                <p style="margin-top:.8rem;">
-                LaCow opera bajo la lógica de contratos al partir (aparcería): una parte aporta ganado o capital,
-                la otra aporta tierra, manejo, trabajo y operación. Al cierre del ciclo se liquidan resultados y
-                se reparten utilidades conforme al acuerdo establecido por contrato.
-                </p>
-                <ul>
-                    <li>Base legal en Colombia: Ley 6 de 1975 y Decreto 2815 de 1975.</li>
-                    <li>Las partes definen reglas de valoración (kilos, dinero, edad o mezcla).</li>
-                    <li>El reparto puede ser 50/50, 55/45, 60/40 u otra fórmula pactada.</li>
-                    <li>Debe incluir manejo de mortalidad, fletes, vacunación y causales de liquidación anticipada.</li>
-                    <li>La trazabilidad por animal (peso, identificación y movimientos) es clave para una liquidación justa.</li>
-                </ul>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        st.markdown("##### Ejemplo práctico (liquidación anual)")
-        ejemplo = pd.DataFrame(
+    st.markdown("##### Ejemplo práctico (liquidación anual)")
+    st.table(
+        pd.DataFrame(
             {
                 "Concepto": [
                     "Valor inicial del lote",
@@ -209,97 +258,81 @@ def run_app() -> None:
                 "Valor": ["$75.000.000", "$172.000.000", "$97.000.000", "$48.500.000", "$48.500.000"],
             }
         )
-        st.table(ejemplo)
+    )
 
-        st.warning(
-            "Recomendación: en contratos al partir, pactar por escrito metodología de valoración, "
-            "mortalidad asumida y costos operativos para evitar diferencias al liquidar."
-        )
+    st.markdown("<div class='section-title'>Simulador financiero</div>", unsafe_allow_html=True)
+    tab1, tab2, tab3 = st.tabs(["Simulador", "Histórico", "Comparador"])
 
-    with tab_sim:
-        tab1, tab2, tab3 = st.tabs(["Simulador", "Histórico", "Comparador"])
+    with tab1:
+        col_a, col_b = st.columns(2)
 
-        with tab1:
-            col_a, col_b = st.columns(2)
+        with col_a:
+            st.markdown('<div class="glass"><h4>Datos del escenario</h4></div>', unsafe_allow_html=True)
+            peso_compra_kg = st.number_input("Peso compra", value=160.0)
+            precio_compra_kg = st.number_input("Precio compra", value=7500.0)
+            peso_venta_kg = st.number_input("Peso venta", value=450.0)
+            precio_venta_kg = st.number_input("Precio venta", value=9200.0)
+            costo_pasto_mensual = st.number_input("Pasto", value=60000.0)
+            costo_sal_med_mensual = st.number_input("Medicamentos", value=15000.0)
+            meses = st.number_input("Meses", value=12)
+            otros_costos = st.number_input("Otros", value=100000.0)
+            calcular = st.button("Calcular")
 
-            with col_a:
-                st.markdown('<div class="section-card">', unsafe_allow_html=True)
-                st.markdown("##### Datos del escenario")
-                peso_compra_kg = st.number_input("Peso compra", value=160.0)
-                precio_compra_kg = st.number_input("Precio compra", value=7500.0)
-                peso_venta_kg = st.number_input("Peso venta", value=450.0)
-                precio_venta_kg = st.number_input("Precio venta", value=9200.0)
-                costo_pasto_mensual = st.number_input("Pasto", value=60000.0)
-                costo_sal_med_mensual = st.number_input("Medicamentos", value=15000.0)
-                meses = st.number_input("Meses", value=12)
-                otros_costos = st.number_input("Otros", value=100000.0)
-                calcular = st.button("Calcular")
-                st.markdown('</div>', unsafe_allow_html=True)
+        with col_b:
+            st.markdown('<div class="glass"><h4>Resultados</h4></div>', unsafe_allow_html=True)
+            if calcular:
+                datos = {
+                    "peso_compra_kg": peso_compra_kg,
+                    "precio_compra_kg": precio_compra_kg,
+                    "peso_venta_kg": peso_venta_kg,
+                    "precio_venta_kg": precio_venta_kg,
+                    "costo_pasto_mensual": costo_pasto_mensual,
+                    "costo_sal_med_mensual": costo_sal_med_mensual,
+                    "meses": int(meses),
+                    "otros_costos": otros_costos,
+                }
+                escenario = EscenarioGanado(**datos)
+                res = calcular_rentabilidad(escenario)
+                guardar_simulacion_excel(datos, res, "outputs/historico_simulaciones.xlsx")
 
-            with col_b:
-                st.markdown('<div class="section-card">', unsafe_allow_html=True)
-                st.markdown("##### Resultados")
+                st.metric("Utilidad", f"${res['utilidad']:,.0f}")
+                st.metric("ROI", f"{res['roi']:.2%}")
+                st.metric("Equilibrio", f"${res['precio_equilibrio_kg_venta']:,.0f}")
 
-                if calcular:
-                    datos = {
-                        "peso_compra_kg": peso_compra_kg,
-                        "precio_compra_kg": precio_compra_kg,
-                        "peso_venta_kg": peso_venta_kg,
-                        "precio_venta_kg": precio_venta_kg,
-                        "costo_pasto_mensual": costo_pasto_mensual,
-                        "costo_sal_med_mensual": costo_sal_med_mensual,
-                        "meses": int(meses),
-                        "otros_costos": otros_costos,
-                    }
-                    escenario = EscenarioGanado(**datos)
-                    res = calcular_rentabilidad(escenario)
-                    guardar_simulacion_excel(datos, res, "outputs/historico_simulaciones.xlsx")
+    with tab2:
+        st.markdown('<div class="glass"><h4>Histórico</h4></div>', unsafe_allow_html=True)
+        if ruta_historico.exists():
+            st.dataframe(pd.read_excel(ruta_historico), use_container_width=True)
+        else:
+            st.info("Aún no hay histórico de simulaciones.")
 
-                    st.metric("Utilidad", f"${res['utilidad']:,.0f}")
-                    st.metric("ROI", f"{res['roi']:.2%}")
-                    st.metric("Equilibrio", f"${res['precio_equilibrio_kg_venta']:,.0f}")
-                else:
-                    st.caption("Completa datos y pulsa Calcular para ver resultados.")
-                st.markdown('</div>', unsafe_allow_html=True)
+    with tab3:
+        st.markdown('<div class="glass"><h4>Comparador</h4></div>', unsafe_allow_html=True)
+        c1, c2, c3 = st.columns(3)
+        defaults = {
+            "peso_compra_kg": 160,
+            "precio_compra_kg": 7500,
+            "peso_venta_kg": 450,
+            "precio_venta_kg": 9200,
+            "costo_pasto_mensual": 60000,
+            "costo_sal_med_mensual": 15000,
+            "meses": 12,
+            "otros_costos": 100000,
+        }
 
-        with tab2:
-            st.markdown('<div class="section-card">', unsafe_allow_html=True)
-            st.markdown("##### Histórico")
-            if ruta_historico.exists():
-                st.dataframe(pd.read_excel(ruta_historico), use_container_width=True)
-            else:
-                st.info("Aún no hay histórico de simulaciones.")
-            st.markdown('</div>', unsafe_allow_html=True)
+        with c1:
+            esc1 = construir_escenario("Escenario 1", defaults)
+        with c2:
+            esc2 = construir_escenario("Escenario 2", defaults)
+        with c3:
+            esc3 = construir_escenario("Escenario 3", defaults)
 
-        with tab3:
-            st.markdown('<div class="section-card">', unsafe_allow_html=True)
-            st.markdown("##### Comparador")
-            c1, c2, c3 = st.columns(3)
-            defaults = {
-                "peso_compra_kg": 160,
-                "precio_compra_kg": 7500,
-                "peso_venta_kg": 450,
-                "precio_venta_kg": 9200,
-                "costo_pasto_mensual": 60000,
-                "costo_sal_med_mensual": 15000,
-                "meses": 12,
-                "otros_costos": 100000,
-            }
-
-            with c1:
-                esc1 = construir_escenario("Escenario 1", defaults)
-            with c2:
-                esc2 = construir_escenario("Escenario 2", defaults)
-            with c3:
-                esc3 = construir_escenario("Escenario 3", defaults)
-
-            if st.button("Comparar"):
-                resultados = []
-                for nombre, esc in zip(["E1", "E2", "E3"], [esc1, esc2, esc3]):
-                    r = calcular_rentabilidad(EscenarioGanado(**esc))
-                    resultados.append({"escenario": nombre, **r})
-                st.dataframe(pd.DataFrame(resultados), use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
+        if st.button("Comparar"):
+            resultados = []
+            for nombre, esc in zip(["E1", "E2", "E3"], [esc1, esc2, esc3]):
+                r = calcular_rentabilidad(EscenarioGanado(**esc))
+                resultados.append({"escenario": nombre, **r})
+            st.dataframe(pd.DataFrame(resultados), use_container_width=True)
 
 
 run_app()
